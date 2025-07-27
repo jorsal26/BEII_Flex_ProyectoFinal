@@ -6,6 +6,7 @@ const Product = require('../models/Product');
 const Cart = require('../models/Cart');
 const Order = require('../models/Order');
 
+// Limpiar la base de datos
 const resetData = async () => {
   await mongoose.connect(process.env.MONGO_URI);
 

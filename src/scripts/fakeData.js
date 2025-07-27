@@ -1,6 +1,4 @@
 require('dotenv').config();
-//import dotenv from 'dotenv';
-//dotenv.config();
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
@@ -10,28 +8,30 @@ const Product = require('../models/Product');
 const Cart = require('../models/Cart');
 const Order = require('../models/Order');
 
+// Conectar a MongoDB
 const connectDB = async () => {
   await mongoose.connect(process.env.MONGO_URI);
 };
 
+// Datos ficticios para probar el API
 const seedData = async () => {
   await connectDB();
 
-  // 🧍 Usuarios
+  //Usuarios (con password hashado) y rol
   const hashedPass = await bcrypt.hash('123456', 10);
   const users = await User.insertMany([
     { first_name: 'Juan', last_name: 'Pérez', email: 'juan@mail.com', age: 28, password: hashedPass, role: 'user' },
     { first_name: 'Ana', last_name: 'Gómez', email: 'ana@mail.com', age: 35, password: hashedPass, role: 'admin' },
   ]);
 
-  // 📦 Productos
+  //Productos (con stock y categoria)
   const products = await Product.insertMany([
     { name: 'Zapatillas', description: 'Deportivas', price: 120, stock: 30, category: 'calzado' },
     { name: 'Mochila', description: 'Resistente al agua', price: 80, stock: 20, category: 'accesorios' },
     { name: 'Remera', description: '100% algodón', price: 35, stock: 50, category: 'ropa' }
   ]);
 
-  // 🛒 Carritos
+  //Carritos (con items y total)
   const carts = await Cart.insertMany([
     {
       user: users[0]._id,
@@ -43,9 +43,10 @@ const seedData = async () => {
     }
   ]);
 
+  //Actualizar el carrito del usuario logueado
   await User.findByIdAndUpdate(users[0]._id, { cart: carts[0]._id });
 
-  // 🧾 Órdenes
+  //Ordenes de compra (con items y total)
   await Order.create({
     user: users[0]._id,
     items: [

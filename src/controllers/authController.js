@@ -1,19 +1,18 @@
-// src/controllers/authController.js
 const bcrypt = require('bcrypt');
 const UserDAO = require('../dao/UserDAO');
 const UserDTO = require('../dtos/UserDTO');
 const { sendRegistrationEmail } = require('../services/emailService');
 
+// Registro (registerController)
 const registerController = async (req, res) => {
   try {
     const { first_name, last_name, email, password, age } = req.body;
 
-    // Validación básica
     if (!email || !password || !first_name || !last_name) {
       return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
 
-    const exists = await UserDAO.findByEmail(email);
+    const exists = await UserDAO.getByEmail(email);
     if (exists) return res.status(409).json({ error: 'Email ya registrado' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -39,7 +38,7 @@ const registerController = async (req, res) => {
   }
 };
 
-
+// Login (loginController)
 const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -55,4 +54,11 @@ const loginController = async (req, res) => {
   }
 };
 
-module.exports = { registerController, loginController };
+// Obtener la sesión del usuario logueado (getCurrentSession)
+const getCurrentSession = async (req, res) => {
+  const sessionData = await sessionDAO.getSessionData(req.user.id);
+  if (!sessionData) return res.status(401).json({ message: 'Sesión no válida' });
+  res.json(new SessionDTO(sessionData));
+};
+
+module.exports = { registerController, loginController, getCurrentSession };

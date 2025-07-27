@@ -1,13 +1,27 @@
 const nodemailer = require('nodemailer');
+const fs = require('fs');
+const path = require('path');
+const handlebars = require('handlebars');
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  //service: 'gmail',
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
   }
 });
 
+//Compilar plantilla Handlebars (compileTemplate)
+const compileTemplate = (templateName, data) => {
+  const templatePath = path.join(__dirname, `../views/emails/${templateName}.hbs`);
+  const source = fs.readFileSync(templatePath, 'utf8');
+  const template = handlebars.compile(source);
+  return template(data);
+};
+
+//Enviar correo con PDF adjunto (sendOrderConfirmation)
 const sendOrderConfirmation = async (to, pdfBuffer) => {
   await transporter.sendMail({
     from: `"eCommerce App" <${process.env.EMAIL_USER}>`,
@@ -23,6 +37,7 @@ const sendOrderConfirmation = async (to, pdfBuffer) => {
   });
 };
 
+//Enviar correo con PDF adjunto (sendRegistrationEmail)
 const sendRegistrationEmail = async (user) => {
   const message = {
     from: `"eCommerce App" <${process.env.EMAIL_USER}>`,
@@ -40,4 +55,22 @@ const sendRegistrationEmail = async (user) => {
   await transporter.sendMail(message);
 };
 
-module.exports = { sendRegistrationEmail, sendOrderConfirmation };
+//Enviar correo con PDF adjunto (sendOrderEmail)
+const sendOrderEmail = async (to, orderData) => {
+  const html = compileTemplate('orderConfirmation', orderData);
+
+  return await transporter.sendMail({
+    from: `"Tienda Pro" <${process.env.SMTP_USER}>`,
+    to,
+    subject: `📦 Confirmación de orden #${orderData.id}`,
+    html,
+    attachments: [
+      {
+        filename: `ticket-${orderData.id}.pdf`,
+        path: path.join(__dirname, `../../public/pdfs/ticket-${orderData.id}.pdf`)
+      }
+    ]
+  });
+};
+
+module.exports = { sendRegistrationEmail, sendOrderConfirmation, sendOrderEmail  };

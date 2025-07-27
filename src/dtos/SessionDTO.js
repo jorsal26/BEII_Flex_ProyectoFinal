@@ -1,5 +1,6 @@
-// dtos/SessionDTO.js
+// DTO para el modelo Session
 class SessionDTO {
+  // Constructor de la clase SessionDTO
   constructor(session) {
     this.id = session.id;
     this.email = session.email;

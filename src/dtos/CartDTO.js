@@ -1,15 +1,6 @@
-// dtos/CartDTO.js
-/*
+// DTO para el modelo Cart
 class CartDTO {
-  constructor(cart) {
-    this.id = cart._id;
-    this.items = cart.items;
-    this.total = cart.total;
-  }
-}
-module.exports = CartDTO;
-*/
-class CartDTO {
+  // Constructor de la clase CartDTO
   constructor(cart) {
     this.id = cart._id;
     this.user = cart.user;

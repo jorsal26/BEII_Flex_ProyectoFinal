@@ -1,6 +1,7 @@
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('../models/User');
 
+// 🔐 Configuración de passport (passport.use)
 module.exports = (passport) => {
   passport.use(new LocalStrategy({ usernameField: 'email' },
     async (email, password, done) => {
@@ -18,10 +19,12 @@ module.exports = (passport) => {
     }
   ));
 
+  // 🔐 Serializar usuario (passport.serializeUser)
   passport.serializeUser((user, done) => {
     done(null, user.id);
   });
 
+  // 🔐 Deserializar usuario (passport.deserializeUser)
   passport.deserializeUser(async (id, done) => {
     const user = await User.findById(id);
     done(null, user);

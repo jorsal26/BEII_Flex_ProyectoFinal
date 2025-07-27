@@ -1,14 +1,21 @@
-require('./config/envValidator'); // 👈 Valida antes de levantar Express
-require('dotenv').config();  // 👈 Activamos dotenv
-const express = require('express');
-const connectDB = require('./config/db');
+const mongoose = require('mongoose');
+const app = require('./app');
 
-const app = express();
-const port = process.env.PORT || 8080;
+//Validación de entorno (opcional) (envValidator)
+require('./config/envValidator');
 
-app.use(express.json());
-connectDB();
+const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI;
 
-app.listen(port, () => {
-  console.log(`Servidor corriendo en el puerto ${port}`);
-});
+//Conectar a MongoDB
+mongoose.connect(MONGO_URI)
+  .then(() => {
+    console.log('✅ Conectado a MongoDB');
+    app.listen(PORT, () => {
+      console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('❌ Error al conectar con MongoDB:', err.message);
+    process.exit(1);
+  });

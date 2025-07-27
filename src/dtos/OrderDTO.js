@@ -1,16 +1,6 @@
-// dtos/OrderDTO.js
-/*
+// DTO para el modelo Order
 class OrderDTO {
-  constructor(order) {
-    this.id = order._id;
-    this.date = order.createdAt;
-    this.total = order.total;
-    this.items = order.items;
-  }
-}
-module.exports = OrderDTO;
-*/
-class OrderDTO {
+  // Constructor de la clase OrderDTO
   constructor(order) {
     this.id = order._id;
     this.user = order.user;
