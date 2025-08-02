@@ -2,6 +2,21 @@
 const cartDAO = require('../dao/CartDAO');
 const CartDTO = require('../dtos/CartDTO');
 
+const createCart = async (req, res) => {
+  const cart = await cartDAO.create(req.user.id);
+  res.json(new CartDTO(cart));
+};
+
+const addToCart = async (req, res) => {
+  const cart = await cartDAO.addToCart(req.params.cartId, req.params.productId, req.body.quantity);
+  res.json(new CartDTO(cart));
+};
+
+const removeFromCart = async (req, res) => {
+  const cart = await cartDAO.removeFromCart(req.params.cartId, req.params.productId, req.body.quantity);
+  res.json(new CartDTO(cart));
+};
+
 // Obtener el carro del usuario logueado (getCart)
 const getCart = async (req, res) => {
   const cart = await cartDAO.getByUserId(req.user.id);
@@ -28,4 +43,4 @@ const getAllCarts = async (req, res) => {
   res.json(dtos);
 };
 
-module.exports = { getCart, updateCart, clearCart, getAllCarts };
+module.exports = { createCart, addToCart, removeFromCart, getCart, updateCart, clearCart, getAllCarts };

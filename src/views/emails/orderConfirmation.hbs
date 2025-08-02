@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Confirmación de Orden</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #333;
+        padding: 20px;
+      }
+      h2 {
+        color: #0d6efd;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+      th, td {
+        padding: 8px;
+        border-bottom: 1px solid #ccc;
+        text-align: left;
+      }
+      .total {
+        text-align: right;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+      .button {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 15px;
+        background-color: #0d6efd;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>¡Gracias por tu compra, {{customer.name}}!</h2>
+
+    <p>Tu orden <strong>#{{id}}</strong> fue confirmada el <strong></strong>.</p>
+
+    <h3>Detalles del pedido</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each items}}
+          <tr>
+            <td>{{this.name}}</td>
+            <td>{{this.quantity}}</td>
+            <td>${{this.price}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <p class="total">Total: ${{total}}</p>
+
+    <h3>Datos del cliente</h3>
+    <p>
+      <strong>Dirección:</strong> {{customer.address}}<br />
+      <strong>Email:</strong> {{customer.email}}<br />
+      <strong>Teléfono:</strong> {{customer.phone}}
+    </p>
+
+    <a class="button" href="{{pdfUrl}}" target="_blank">📄 Descargar Ticket PDF</a>
+  </body>
+</html>

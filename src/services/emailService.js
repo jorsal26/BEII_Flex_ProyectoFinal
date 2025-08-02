@@ -2,6 +2,7 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 const handlebars = require('handlebars');
+const hbsHelpers = require('../utils/hbs.helpers');
 
 const transporter = nodemailer.createTransport({
   //service: 'gmail',
@@ -24,8 +25,8 @@ const compileTemplate = (templateName, data) => {
 //Enviar correo con PDF adjunto (sendOrderConfirmation)
 const sendOrderConfirmation = async (to, pdfBuffer) => {
   await transporter.sendMail({
-    from: `"eCommerce App" <${process.env.EMAIL_USER}>`,
-    to,
+    from: `"Tienda Nona Cali Dulzuras" <${process.env.EMAIL_USER}>`,
+    to: user.email,
     subject: 'Confirmación de pedido',
     text: 'Gracias por tu compra',
     attachments: [
@@ -40,7 +41,7 @@ const sendOrderConfirmation = async (to, pdfBuffer) => {
 //Enviar correo con PDF adjunto (sendRegistrationEmail)
 const sendRegistrationEmail = async (user) => {
   const message = {
-    from: `"eCommerce App" <${process.env.EMAIL_USER}>`,
+    from: `"Nona Cali Dulzuras" <${process.env.EMAIL_USER}>`,
     to: user.email,
     subject: '🎉 ¡Registro exitoso!',
     html: `
@@ -57,13 +58,13 @@ const sendRegistrationEmail = async (user) => {
 
 //Enviar correo con PDF adjunto (sendOrderEmail)
 const sendOrderEmail = async (to, orderData) => {
-  const html = compileTemplate('orderConfirmation', orderData);
+  //const html = compileTemplate('orderConfirmation', orderData);
 
   return await transporter.sendMail({
-    from: `"Tienda Pro" <${process.env.SMTP_USER}>`,
-    to,
+    from: `"Tienda Nona Cali Dulzuras" <${process.env.EMAIL_USER}>`,
+    to: user.email,
     subject: `📦 Confirmación de orden #${orderData.id}`,
-    html,
+    text: 'Gracias por tu compra',
     attachments: [
       {
         filename: `ticket-${orderData.id}.pdf`,

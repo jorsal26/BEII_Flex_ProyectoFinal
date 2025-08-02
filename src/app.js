@@ -28,7 +28,7 @@ app.use('/api/auth', authRoutes); //Rutas de autenticación
 app.use('/api/sessions', sessionRoutes); //Rutas de sesiones
 app.use('/api/users', userRoutes); //Rutas de usuarios
 app.use('/api/products', productRoutes); //Rutas de productos
-app.use('/api/cart', cartRoutes); //Rutas de carritos
+app.use('/api/carts', cartRoutes); //Rutas de carritos
 app.use('/api/orders', orderRoutes); //Rutas de órdenes
 
 //Error 404 (app.use)

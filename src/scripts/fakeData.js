@@ -17,11 +17,13 @@ const connectDB = async () => {
 const seedData = async () => {
   await connectDB();
 
-  //Usuarios (con password hashado) y rol
+   //Usuarios (con password hashado) y rol
+  const hashedPassAdm = await bcrypt.hash('Admin123', 10);
   const hashedPass = await bcrypt.hash('123456', 10);
   const users = await User.insertMany([
-    { first_name: 'Juan', last_name: 'Pérez', email: 'juan@mail.com', age: 28, password: hashedPass, role: 'user' },
-    { first_name: 'Ana', last_name: 'Gómez', email: 'ana@mail.com', age: 35, password: hashedPass, role: 'admin' },
+    { first_name: 'Juan', last_name: 'Pérez', email: 'juan@mail.com', age: 28, password: hashedPassAdm, role: 'admin' },
+    { first_name: 'Ana', last_name: 'Gómez', email: 'ana@mail.com', age: 35, password: hashedPass, role: 'user' },
+    { first_name: "Ramiro", last_name: "Sanchez", email: "rsanchez@mail.com", age: 30, password: hashedPass, role: "user" }
   ]);
 
   //Productos (con stock y categoria)
@@ -57,6 +59,16 @@ const seedData = async () => {
     status: 'pagado'
   });
 
+  // Crear orden para el usuario con carrito
+  await Order.create({
+    user: users[0]._id,
+    items: carts.items,
+    total: 8990 * 2 + 7490,
+    coupon: "DESCUENTO10",
+    createdAt: new Date(),
+    status: 'pendiente'
+  });
+  
   console.log('✅ Datos ficticios insertados correctamente');
   mongoose.connection.close();
 };

@@ -17,6 +17,27 @@ class CartDAO {
     return Cart.findByIdAndUpdate(id, data, { new: true });
   }
 
+  // Añadir un producto al carrito (addToCart)
+  async addToCart(id, productId, quantity) {
+    const cart = await Cart.findById(id);
+    const product = await Cart.findById(productId);
+
+    if (!cart) return null;
+    if (!product) return null;
+
+    // Verificar que el producto esté en stock
+    if (product.stock < quantity) return null;
+
+    // Verificar que el carrito no tenga el producto ya
+    if (cart.items.some(item => item.product.id === productId)) return null;
+
+    // Añadir el producto al carrito
+    cart.items.push({ product, quantity });
+    cart.total += product.price * quantity;
+
+    return cart.save();
+  }
+  
   // Limpiar el carrito (clear)
   async clear(id) {
     return Cart.findByIdAndUpdate(id, { items: [], total: 0 }, { new: true });
